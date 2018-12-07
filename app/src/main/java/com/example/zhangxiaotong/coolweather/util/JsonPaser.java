@@ -1,9 +1,13 @@
 package com.example.zhangxiaotong.coolweather.util;
 
 import android.text.TextUtils;
+
 import com.example.zhangxiaotong.coolweather.db.City;
 import com.example.zhangxiaotong.coolweather.db.County;
 import com.example.zhangxiaotong.coolweather.db.Province;
+import com.example.zhangxiaotong.coolweather.gson.Weather;
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -78,5 +82,18 @@ public class JsonPaser {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray heWeather = jsonObject.optJSONArray("HeWeather");
+            String s = heWeather.getJSONObject(0).toString();
+            Gson gson = new Gson();
+            return gson.fromJson(s, Weather.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

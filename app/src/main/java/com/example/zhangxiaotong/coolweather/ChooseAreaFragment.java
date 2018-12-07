@@ -1,6 +1,7 @@
 package com.example.zhangxiaotong.coolweather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -107,22 +108,23 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
                     if (getActivity() instanceof MainActivity) {
-//                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-//                        intent.putExtra("weather_id", weatherId);
-//                        startActivity(intent);
                         getActivity().finish();
+                    } else if (getActivity() instanceof WeatherActivity) {
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);
                     }
-//                    else if (getActivity() instanceof WeatherActivity) {
-//                        WeatherActivity activity = (WeatherActivity) getActivity();
-//                        activity.drawerLayout.closeDrawers();
-//                        activity.swipeRefresh.setRefreshing(true);
-//                        activity.requestWeather(weatherId);
-//                    }
                 }
             }
         });
-        backButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View v) {
                 if (currentLevel == LEVEL_COUNTY) {
@@ -132,6 +134,7 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
+
         queryProvinces();
     }
 
@@ -150,11 +153,11 @@ public class ChooseAreaFragment extends Fragment {
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_PROVINCE;
-            Toast.makeText(getActivity(),"数据库1", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "数据库1", Toast.LENGTH_SHORT).show();
         } else {
             String address = "http://guolin.tech/api/china";
             queryFromServer(address, "province");
-            Toast.makeText(getActivity(),"网络1", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "网络1", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -173,12 +176,12 @@ public class ChooseAreaFragment extends Fragment {
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_CITY;
-            Toast.makeText(getActivity(),"数据库2", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "数据库2", Toast.LENGTH_SHORT).show();
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             String address = "http://guolin.tech/api/china/" + provinceCode;
             queryFromServer(address, "city");
-            Toast.makeText(getActivity(),"网络2", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "网络2", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -197,13 +200,13 @@ public class ChooseAreaFragment extends Fragment {
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
-            Toast.makeText(getActivity(),"数据库3", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "数据库3", Toast.LENGTH_SHORT).show();
         } else {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
             queryFromServer(address, "county");
-            Toast.makeText(getActivity(),"网络3", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "网络3", Toast.LENGTH_SHORT).show();
         }
     }
 
